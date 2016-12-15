@@ -21,35 +21,6 @@ func listenPong(ch *amqp.Channel, msgs <-chan amqp.Delivery, db *mgo.Session) {
 		machStr, _ := json.MarshalIndent(mach, "", "  ")
 		LogMagenta("\n" + string(machStr))
 		mach.Update(db)
-		// // set start time
-		// proj.DateStartArchive = JSONTime(time.Now())
-		// err := archive(dataPath, proj.PID)
-		// if onError(err, d, proj, "Failed to archive") {
-		// 	continue
-		// }
-		// // set ssh host name
-		// proj.SourceHost = host
-		// // set absolute path of archive
-		// file := fmt.Sprintf("%s/%s.tar", depart, proj.PID)
-		// file, _ = filepath.Abs(file)
-		// proj.SourceFile = file
-		// // set filesize of archive
-		// size, err := getArchiveSize(file)
-		// if onError(err, d, proj, "Failed to get filesize of archive") {
-		// 	continue
-		// }
-		// proj.Size = size
-		// // set end time
-		// proj.DateEndArchive = JSONTime(time.Now())
-		// // requeue to rabbit for alti-transferer to process
-		// data, err := json.Marshal(proj)
-		// if onError(err, d, proj, "Failed to marshal json") {
-		// 	continue
-		// }
-		// err = Publish(ch, transfer, data)
-		// if onError(err, d, proj, "Failed to publish to "+transfer) {
-		// 	continue
-		// }
 		LogCyan("Done")
 		d.Ack(false)
 	}
