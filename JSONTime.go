@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strings"
 	"time"
+
+	"gopkg.in/mgo.v2/bson"
 )
 
 // JSONTime represents a datetime.
@@ -22,7 +24,23 @@ func (t *JSONTime) UnmarshalJSON(b []byte) (err error) {
 		*t = JSONTime(time.Now())
 		return
 	}
-	p, err := time.Parse("2006-01-02 03:04:05.0000 PM", s)
+	loc, _ := time.LoadLocation("Asia/Hong_Kong")
+	p, err := time.ParseInLocation("2006-01-02 03:04:05.0000 PM", s, loc)
 	*t = JSONTime(p)
 	return err
+}
+
+// GetBSON marshals JSONTime to time.Time.
+func (t JSONTime) GetBSON() (interface{}, error) {
+	return time.Time(t), nil
+}
+
+// SetBSON unmarshals back to JSONTime
+func (t *JSONTime) SetBSON(raw bson.Raw) error {
+	var tm time.Time
+	if err := raw.Unmarshal(&tm); err != nil {
+		return err
+	}
+	*t = JSONTime(tm)
+	return nil
 }
