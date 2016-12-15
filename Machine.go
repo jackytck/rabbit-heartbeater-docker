@@ -49,6 +49,13 @@ func (m *Machine) Update(session *mgo.Session) {
 	m.Response = append(m.Response, d)
 	m.Status = "up"
 
+	// store the most recent response time only
+	limit := LoadHistoryLimit()
+	s := len(m.Response)
+	if s > limit {
+		m.Response = m.Response[s-limit:]
+	}
+
 	_, err := c.Upsert(bson.M{"name": m.Name}, m)
 	if err != nil {
 		log.Fatal(err)

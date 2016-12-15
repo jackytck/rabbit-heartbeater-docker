@@ -30,6 +30,7 @@ func listenPong(ch *amqp.Channel, msgs <-chan amqp.Delivery, db *mgo.Session) {
 // 'down'.
 func checkTimeout(session *mgo.Session) {
 	db := LoadDBName()
+	limit := LoadTimeout()
 	c := session.DB(db).C("machine")
 	iter := c.Find(bson.M{"status": "up"}).Iter()
 	var machines []Machine
@@ -37,7 +38,7 @@ func checkTimeout(session *mgo.Session) {
 	for _, m := range machines {
 		pong := time.Time(m.Pong)
 		d := time.Since(pong)
-		if d.Seconds() > 60 {
+		if d.Seconds() > limit {
 			LogRed(m.Name + " is down!")
 			m.SetDown(session)
 		}

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 
 	"github.com/joho/godotenv"
 )
@@ -60,4 +61,20 @@ func LoadRabbitName(name string) string {
 func LoadHostName() string {
 	loadEnv()
 	return os.Getenv("ALTI_HOST_NAME")
+}
+
+// LoadTimeout loads the response timeout.
+func LoadTimeout() float64 {
+	loadEnv()
+	ts := os.Getenv("RESPONSE_TIMEOUT")
+	t, _ := strconv.Atoi(ts)
+	return float64(t)
+}
+
+// LoadHistoryLimit loads the limit of the response history.
+func LoadHistoryLimit() int {
+	loadEnv()
+	ls := os.Getenv("RESPONSE_HISTORY_LIMIT")
+	l, _ := strconv.Atoi(ls)
+	return l
 }
