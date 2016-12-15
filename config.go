@@ -15,18 +15,35 @@ func loadEnv() {
 	}
 }
 
-// LoadURI loads the uri of rabbit server from .env.
-func LoadURI() string {
+// LoadDBName loads the name of database in mongo.
+func LoadDBName() string {
 	loadEnv()
-	user := os.Getenv("RABBIT_USER")
-	pwd := os.Getenv("RABBIT_PASSWORD")
-	host := os.Getenv("RABBIT_HOST")
-	port := os.Getenv("RABBIT_PORT")
-	uri := fmt.Sprintf("amqp://%s:%s@%s:%s", user, pwd, host, port)
+	return os.Getenv("MONGO_DB")
+}
+
+// LoadURI loads the uri of rabbit server from .env.
+func LoadURI(key string) string {
+	loadEnv()
+	var uri string
+	switch key {
+	case "rabbit":
+		user := os.Getenv("RABBIT_USER")
+		pwd := os.Getenv("RABBIT_PASSWORD")
+		host := os.Getenv("RABBIT_HOST")
+		port := os.Getenv("RABBIT_PORT")
+		uri = fmt.Sprintf("amqp://%s:%s@%s:%s", user, pwd, host, port)
+	case "mongo":
+		user := os.Getenv("MONGO_USER")
+		pwd := os.Getenv("MONGO_PASSWORD")
+		host := os.Getenv("MONGO_HOST")
+		port := os.Getenv("MONGO_PORT")
+		db := os.Getenv("MONGO_DB")
+		uri = fmt.Sprintf("mongodb://%s:%s@%s:%s/%s", user, pwd, host, port, db)
+	}
 	return uri
 }
 
-// LoadRabbitQueue loads the target queue of rabbit server from .env.
+// LoadRabbitName loads the target queue of rabbit server from .env.
 func LoadRabbitName(name string) string {
 	loadEnv()
 	var queue string
