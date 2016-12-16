@@ -15,6 +15,20 @@ This is `alti-heartbeater`, which is responsible for steps 1, 3 and 4 below.
 3. `alti-heartbeater` will get back the pong messages and determine if any machine goes up or down
 4. Current status is stored in database: `hearbeat`; collection: `machine`
 
+### To subscribe
+Set the followings in .env:
+```bash
+RABBIT_EXCHANGE_ALTI_HEART_PING=altizure-heart-ping
+RABBIT_QUEUE_ALTI_HEART_PONG=altizure-heart-pong
+ALTI_HOST_TYPE=alti-transferer
+ALTI_HOST_NAME=citymap
+ALTI_NICK_NAME=Tangela
+```
+Then call:
+```go
+SubscribeHeartbeat(conn, ch, pingExchangeName, pongQueueName)
+```
+
 #### Sample ping
 ```bash
 {"name":"","nickname":"","type":"","ping":"2016-12-15 07:08:08.0004 PM","pong":"0001-01-01 12:00:00.0000 AM","response":null,"extra":"","status":""}
