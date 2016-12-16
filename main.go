@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"time"
 
@@ -39,7 +40,7 @@ func checkTimeout(session *mgo.Session) {
 		pong := time.Time(m.Pong)
 		d := time.Since(pong)
 		if d.Seconds() > limit {
-			LogRed(m.Name + " is down!")
+			LogRed(fmt.Sprintf("Host: %s\tType: %s\tNickname: %s\tIS DOWN!", m.Name, m.Type, m.Nickname))
 			m.SetDown(session)
 		}
 	}

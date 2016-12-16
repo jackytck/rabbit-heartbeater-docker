@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"time"
 
@@ -11,7 +12,7 @@ import (
 // Machine represents one of the alti-worker.
 type Machine struct {
 	Name     string          `json:"name"`
-	Nickname string          `json:"nickname"`
+	Nickname string          `json:"nickname"` // primary key
 	Type     string          `json:"type"`
 	Ping     JSONTime        `json:"ping"`
 	Pong     JSONTime        `json:"pong"`
@@ -36,9 +37,9 @@ func (m *Machine) Update(session *mgo.Session) {
 	// get existing
 	old := Machine{}
 	useHist := true
-	c.Find(bson.M{"name": m.Name}).One(&old)
+	c.Find(bson.M{"nickname": m.Nickname}).One(&old)
 	if old.Status == "" || old.Status == "down" {
-		LogGreen(m.Name + " is up!")
+		LogGreen(fmt.Sprintf("Host: %s\tType: %s\tNickname: %s\tIS UP!", m.Name, m.Type, m.Nickname))
 		useHist = false
 	}
 
@@ -56,7 +57,7 @@ func (m *Machine) Update(session *mgo.Session) {
 		m.Response = m.Response[s-limit:]
 	}
 
-	_, err := c.Upsert(bson.M{"name": m.Name}, m)
+	_, err := c.Upsert(bson.M{"nickname": m.Nickname}, m)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -67,7 +68,7 @@ func (m *Machine) SetDown(session *mgo.Session) {
 	db := LoadDBName()
 	c := session.DB(db).C("machine")
 	m.Status = "down"
-	_, err := c.Upsert(bson.M{"name": m.Name}, m)
+	_, err := c.Upsert(bson.M{"nickname": m.Nickname}, m)
 	if err != nil {
 		log.Fatal(err)
 	}
