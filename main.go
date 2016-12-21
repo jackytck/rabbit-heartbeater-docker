@@ -40,7 +40,10 @@ func checkTimeout(session *mgo.Session) {
 		pong := time.Time(m.Pong)
 		d := time.Since(pong)
 		if d.Seconds() > limit {
-			LogRed(fmt.Sprintf("Host: %s\tType: %s\tNickname: %s\tIS DOWN!", m.Name, m.Type, m.Nickname))
+			msg := fmt.Sprintf("Host: %s\tType: %s\tNickname: %s\tIS DOWN!", m.Name, m.Type, m.Nickname)
+			text := fmt.Sprintf("💔 %s🔥%s💣%s", m.Name, m.Type, m.Nickname)
+			LogRed(msg)
+			SendTelegram(text)
 			m.SetDown(session)
 		}
 	}

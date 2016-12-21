@@ -1,7 +1,11 @@
 package main
 
 import (
+	"fmt"
+	"io/ioutil"
 	"log"
+	"net/http"
+	"net/url"
 	"strings"
 
 	"github.com/streadway/amqp"
@@ -134,4 +138,16 @@ func ListenToPing(conn *amqp.Connection, ch *amqp.Channel, ping string) <-chan a
 	)
 	FailOnError(err, "Failed to register a consumer")
 	return msgs
+}
+
+// SendTelegram sends a message to the channel.
+func SendTelegram(text string) (string, error) {
+	token, chatID := LoadTelegramConfig()
+	u := fmt.Sprintf("https://api.telegram.org/bot%s/sendMessage", token)
+	v := url.Values{}
+	v.Set("chat_id", chatID)
+	v.Set("text", text)
+	resp, err := http.PostForm(u, v)
+	body, _ := ioutil.ReadAll(resp.Body)
+	return string(body), err
 }

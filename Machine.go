@@ -39,7 +39,10 @@ func (m *Machine) Update(session *mgo.Session) {
 	useHist := true
 	c.Find(bson.M{"nickname": m.Nickname}).One(&old)
 	if old.Status == "" || old.Status == "down" {
-		LogGreen(fmt.Sprintf("Host: %s\tType: %s\tNickname: %s\tIS UP!", m.Name, m.Type, m.Nickname))
+		msg := fmt.Sprintf("Host: %s\tType: %s\tNickname: %s\tIS UP!", m.Name, m.Type, m.Nickname)
+		text := fmt.Sprintf("🚀 %s🚁%s🎈%s", m.Name, m.Type, m.Nickname)
+		LogGreen(msg)
+		SendTelegram(text)
 		useHist = false
 	}
 

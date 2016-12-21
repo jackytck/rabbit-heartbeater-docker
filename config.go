@@ -78,3 +78,9 @@ func LoadHistoryLimit() int {
 	l, _ := strconv.Atoi(ls)
 	return l
 }
+
+// LoadTelegramConfig loads the telegram's token and channel id.
+func LoadTelegramConfig() (string, string) {
+	loadEnv()
+	return os.Getenv("TELEGRAM_BOT_TOKEN"), os.Getenv("TELEGRAM_CHANNEL_ID")
+}
