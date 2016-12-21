@@ -36,16 +36,25 @@ func checkTimeout(session *mgo.Session) {
 	iter := c.Find(bson.M{"status": "up"}).Iter()
 	var machines []Machine
 	iter.All(&machines)
+
+	var downs []Machine
 	for _, m := range machines {
 		pong := time.Time(m.Pong)
 		d := time.Since(pong)
 		if d.Seconds() > limit {
-			msg := fmt.Sprintf("Host: %s\tType: %s\tNickname: %s\tIS DOWN!", m.Name, m.Type, m.Nickname)
-			text := fmt.Sprintf("💔 %s🔥%s💣%s", m.Name, m.Type, m.Nickname)
-			LogRed(msg)
-			SendTelegram(text)
-			m.SetDown(session)
+			// to prevent false negative, instead of doing in the loop
+			// store all the downed machines for sending messages later
+			downs = append(downs, m)
 		}
+	}
+
+	// log and send down message
+	for _, m := range downs {
+		msg := fmt.Sprintf("Host: %s\tType: %s\tNickname: %s\tIS DOWN!", m.Name, m.Type, m.Nickname)
+		text := fmt.Sprintf("💔 %s🔥%s💣%s", m.Name, m.Type, m.Nickname)
+		LogRed(msg)
+		SendTelegram(text)
+		m.SetDown(session)
 	}
 }
 
