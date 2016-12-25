@@ -3,12 +3,14 @@ heartbeater: *.go
 
 .env: .env
 	cp .env bin
+	cp status-template.html bin
 
 worker-linux: *.go
 	env GOOS=linux GOARCH=amd64 go build -o bin/heartbeater
 
 .env-linux: .env.prod
 	cp .env.prod bin/.env
+	cp status-template.html bin
 
 linux: worker-linux
 

@@ -3,7 +3,9 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"html/template"
 	"log"
+	"os"
 	"time"
 
 	mgo "gopkg.in/mgo.v2"
@@ -58,6 +60,43 @@ func checkTimeout(session *mgo.Session) {
 	}
 }
 
+// genStatusPage generates a static html status page.
+func genStatusPage(session *mgo.Session) {
+	// load all machines
+	db := LoadDBName()
+	c := session.DB(db).C("machine")
+	iter := c.Find(bson.M{}).Iter()
+	var machines []Machine
+	iter.All(&machines)
+
+	// page's data
+	now := time.Now()
+	p := Page{machines, now.Format("2006-01-02 03:04:05 PM MST")}
+
+	// render template
+	t, err := template.ParseFiles("status-template.html")
+	if err != nil {
+		LogRed(fmt.Sprintf("%v", err))
+		return
+	}
+
+	// output to index.html
+	f, err := os.Create("index.html")
+	defer f.Close()
+	if err != nil {
+		LogRed(fmt.Sprintf("%v", err))
+		return
+	}
+	err = t.Execute(f, p)
+	if err != nil {
+		LogRed(fmt.Sprintf("%v", err))
+		return
+	}
+
+	// upload to s3
+	UploadS3("index.html")
+}
+
 func ping(ch *amqp.Channel, ex string) {
 	LogCyan("Sending Ping...")
 	machine := Machine{}
@@ -101,6 +140,10 @@ func main() {
 	// check for any timeout from existing "up" machines
 	c.AddFunc("@every 60s", func() { checkTimeout(dbSession) })
 	checkTimeout(dbSession)
+
+	// generate / update status page
+	c.AddFunc("@every 60s", func() { genStatusPage(dbSession) })
+	genStatusPage(dbSession)
 
 	// start cron
 	c.Start()

@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+	<head>
+	  <meta charset="utf-8">
+		<style>
+			body{
+			  background: rgb(240,240,240);
+			  font-family: sans-serif;
+			  margin-top: 5%;
+			}
+			ul{
+			  width: 600px;
+			  margin: 0 auto;
+			  background: rgb(255,255,255);
+			  border: 1px solid rgb(220,220,220);
+			  border-radius: 5px;
+			  list-style: none;
+			  padding: 0px;
+			  line-height: 50px;
+			  cursor: default;
+			}
+			ul li {
+			  height: 50px;
+			  border-bottom: 1px solid rgb(220,220,220);
+			  text-indent: 15px;
+			}
+			ul li:last-child{
+			  border: none;
+			}
+			.date {
+			  width: 600px;
+			  margin: 0 auto;
+			  padding-bottom: 10px;
+				text-align: right;
+			}
+			.status {
+			  display: inline-block;
+			  float: right;
+			  height: 1em;
+			  line-height: 1em;
+			  margin: 17px 15px;
+			  text-indent: 0;
+
+			  font-family:  'Monaco','Consolas', 'Courier', monospace;
+			  font-weight: bold;
+			  font-size: 0.800em;
+			  text-transform: uppercase;
+			  padding: 1px 2px;
+			}
+			.blue {
+			  color: #2791d9;
+			  border-color: #2791d9;
+			}
+			.green {
+			  color: #2ecc71;
+			  border-color: #2ecc71;
+			}
+			.yellow {
+			  color: #f1c40f;
+			  border-color: #f1c40f;
+			}
+			.orange {
+			  color: #e67e22;
+			  border-color: #e67e22;
+			}
+			.red{
+			  color: #e74c3c;
+			  border-color: #e74c3c;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="date">{{.Date}}</div>
+		<ul>
+			{{range .Machines}}
+				<li>
+					<span>{{.Nickname}}</span>
+					{{if eq .Status `up`}}
+						<span class="status green">Operational</span>
+					{{else}}
+						<span class="status red">Major Fault</span>
+					{{end}}
+				</li>
+			{{end}}
+		</ul>
+	</body>
+</html>

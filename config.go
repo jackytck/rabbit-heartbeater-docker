@@ -84,3 +84,10 @@ func LoadTelegramConfig() (string, string) {
 	loadEnv()
 	return os.Getenv("TELEGRAM_BOT_TOKEN"), os.Getenv("TELEGRAM_CHANNEL_ID")
 }
+
+// LoadAwsCreds loads the aws credentials, region and bucket.
+func LoadAwsCreds() (string, string, string, string) {
+	loadEnv()
+	return os.Getenv("AWS_ACCESS"), os.Getenv("AWS_SECRET"),
+		os.Getenv("AWS_REGION"), os.Getenv("AWS_BUCKET")
+}
