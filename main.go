@@ -65,7 +65,7 @@ func genStatusPage(session *mgo.Session) {
 	// load all machines
 	db := LoadDBName()
 	c := session.DB(db).C("machine")
-	iter := c.Find(bson.M{}).Iter()
+	iter := c.Find(bson.M{}).Sort("nickname").Iter()
 	var machines []Machine
 	iter.All(&machines)
 
