@@ -43,6 +43,7 @@ func UploadS3(filePath string) {
 		Body:          fileBytes,
 		ContentLength: aws.Int64(size),
 		ContentType:   aws.String(fileType),
+		CacheControl:  aws.String("max-age=0"),
 	}
 	_, err = svc.PutObject(params)
 	if err != nil {
