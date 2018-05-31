@@ -10,7 +10,7 @@ worker-linux: *.go
 
 .env-linux: .env.prod
 	cp .env.prod bin/.env
-	cp status-template.html bin
+	cp src/status-template.html bin
 
 linux: worker-linux
 
