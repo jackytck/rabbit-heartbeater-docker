@@ -15,6 +15,9 @@ import (
 // UploadS3 uploads a file to s3.
 func UploadS3(filePath string) {
 	key, secret, region, bucket := LoadAwsCreds()
+	if key == "" || secret == "" || region == "" || bucket == "" {
+		return
+	}
 	token := ""
 	creds := credentials.NewStaticCredentials(key, secret, token)
 	_, err := creds.Get()

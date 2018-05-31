@@ -143,6 +143,9 @@ func ListenToPing(conn *amqp.Connection, ch *amqp.Channel, ping string) <-chan a
 // SendTelegram sends a message to the channel.
 func SendTelegram(text string) (string, error) {
 	token, chatID := LoadTelegramConfig()
+	if token == "" || chatID == "" {
+		return "", nil
+	}
 	u := fmt.Sprintf("https://api.telegram.org/bot%s/sendMessage", token)
 	v := url.Values{}
 	v.Set("chat_id", chatID)
