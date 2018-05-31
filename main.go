@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"html/template"
 	"log"
+	"net/http"
 	"os"
 	"time"
 
@@ -107,6 +108,10 @@ func ping(ch *amqp.Channel, ex string) {
 	LogCyan("Done")
 }
 
+func handleStatusPage(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "index.html")
+}
+
 func main() {
 	// environment variables
 	rabbitURI := LoadURI("rabbit")
@@ -147,6 +152,10 @@ func main() {
 
 	// start cron
 	c.Start()
+
+	// serve status page
+	http.HandleFunc("/", handleStatusPage)
+	go http.ListenAndServe(LoadPort(), nil)
 
 	// listen by forever blocking
 	forever := make(chan bool)

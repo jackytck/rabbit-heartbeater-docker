@@ -22,6 +22,16 @@ func LoadDBName() string {
 	return os.Getenv("MONGO_DB")
 }
 
+// LoadPort loads the port of status page.
+func LoadPort() string {
+	loadEnv()
+	p := os.Getenv("PAGE_PORT")
+	if p == "" {
+		return ":8080"
+	}
+	return p
+}
+
 // LoadURI loads the uri of rabbit server from .env.
 func LoadURI(key string) string {
 	loadEnv()
