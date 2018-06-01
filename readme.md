@@ -43,3 +43,29 @@ SubscribeHeartbeat(conn, ch, pingExchangeName, pongQueueName)
 ```bash
 sudo journalctl -o cat -f -u alti-heartbeater
 ```
+
+#### Docker-compose sample
+```yml
+heartbeater:
+  image: jackytck/rabbit-heartbeater-docker:v0.0.1
+  environment:
+    - RABBIT_HOST=rabbit
+    - RABBIT_USER=username
+    - RABBIT_PASSWORD=password
+    - RABBIT_PORT=5672
+    - RABBIT_EXCHANGE_ALTI_HEART_PING=altizure-heart-ping
+    - RABBIT_QUEUE_ALTI_HEART_PONG=altizure-heart-pong
+    - RESPONSE_TIMEOUT=60
+    - RESPONSE_HISTORY_LIMIT=100
+    - MONGO_HOST=host.docker.internal
+    - MONGO_USER=root
+    - MONGO_PASSWORD=password
+    - MONGO_PORT=27017
+    - MONGO_DB=heartbeat
+    - TZ=Asia/Hong_Kong
+  ports:
+    - "8086:8080"
+  depends_on:
+    - rabbit
+  restart: on-failure
+```
