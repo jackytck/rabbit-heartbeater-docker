@@ -130,6 +130,7 @@ func main() {
 	conn, ch := ConnectRabbit(rabbitURI)
 	defer conn.Close()
 	defer ch.Close()
+	ExitOnClose(conn)
 
 	// braodcast via exchange per 60 seconds
 	DeclareExchange(ch, pingName)
